@@ -27,6 +27,6 @@ def create_json_from_folder(input_folder, output_json_file):
 
     print(f"JSON file created successfully at {output_json_file}")
 
-input_folder = r"C:\Users\natha\Desktop\ECE201A_Project\RAG\convos" 
-output_json_file = "convos.json" 
+input_folder = r"C:\Users\natha\Desktop\ECE201A_Project\RAG\analog_design" 
+output_json_file = "analog.json" 
 create_json_from_folder(input_folder, output_json_file)
