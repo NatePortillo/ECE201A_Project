@@ -63,19 +63,12 @@ class GPT4:
 
         Additionally, here is background information that may help inform your strict syntax design:
         1) {rag_background_info[0]}
-        2) {rag_background_info[1]}
-        3) {rag_background_info[2]}
 
         Lastly, here are some examples of strict syntax:
         Example 1:
             {convo_background_info[0]}
-        Example 2:
-            {convo_background_info[1]}
-        Example 3:
-            {convo_background_info[2]}
-        Example 4:
-            Human Prompt: {user_prompt}:
-
+        
+        Human Prompt: {user_prompt}:
             Generate strict syntax for this human prompt. Do not generate comments, only strict syntax.
         """
         response = self.gpt_4o_mini(strict_syntax_example)
@@ -101,7 +94,7 @@ class GPT4:
 
         Ensure the values make sense in the context of the parameter names. If a default is provided, use it as the value unless instructed otherwise.
 
-        Only output the list of dictionaries as valid Python syntax. Do not include explanations or additional text.
+        Only output the list of dictionaries. Do not include any other syntax or words.
         """
         response = self.gpt_4o_mini(text)
         return response
