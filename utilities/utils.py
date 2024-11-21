@@ -2,6 +2,12 @@ import time
 import inspect
 import ast
 
+from utilities.gpt4 import GPT4
+from utilities.syntaxprocessor import SyntaxProcessor
+from utilities.prompts import STRICT_SYNTAX_INSTRUCT, USER_PROMPT, API_KEY
+
+from RAG.search_embeddings import parse_embeddings, DF_ANALOG, DF_CONVOS
+
 def retry_function(func, max_retries=3, delay=1, *args, **kwargs):
     """
     Retries a function multiple times if it raises an exception.
@@ -66,3 +72,20 @@ def extract_function_parameters(func):
                 }
             return parameters
     return {}
+
+def generate_strictsyntax_and_process():
+    gpt4 = GPT4(api_key=API_KEY)
+    map = SyntaxProcessor()
+    strict_syntax = gpt4.gpt_4o_strict_syntax(USER_PROMPT, # Generate new strict_syntax
+                                              STRICT_SYNTAX_INSTRUCT, 
+                                              parse_embeddings(df=DF_ANALOG, input_prompt=USER_PROMPT),
+                                              parse_embeddings(df=DF_CONVOS, input_prompt=USER_PROMPT))
+    
+    return map.process_syntax(strict_syntax) # Process the strict syntax
+
+def generate_parameters_and_process(parameters):
+    gpt4 = GPT4(api_key=API_KEY)
+    response = gpt4.gpt_4o_parameters(USER_PROMPT, parameters)
+    parsed_response = ast.literal_eval(response)  # Convert string to Python list
+    
+    return parsed_response

@@ -23,3 +23,7 @@ Routes are connections between 2 Ports. There are 4 types of routes: straight_ro
 StrictSyntax Style Guide
 When specifying component parameters always use named arguments. You should always follow this order of commands when creating a Component with strictsyntax: Start by importing any required Components, then create any required parameters, then place all required ComponentRefs with their respective parameters, then move all ComponentRefs to their final positions relative to one another, and lastly route between ComponentRefs. Do not place components overlapping (always move components if more than one is placed)
 """
+
+USER_PROMPT = "Create a strong-arm latch using interdigitated placement to match the cross-coupled inverters"
+
+API_KEY="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"
