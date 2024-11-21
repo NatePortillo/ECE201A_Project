@@ -63,11 +63,17 @@ class GPT4:
 
         Additionally, here is background information that may help inform your strict syntax design:
         1) {rag_background_info[0]}
+        2) {rag_background_info[1]}
+        3) {rag_background_info[2]}
 
         Lastly, here are some examples of strict syntax:
         Example 1:
             {convo_background_info[0]}
-        
+        Example 2:
+            {convo_background_info[1]}
+        Example 3:
+            {convo_background_info[2]}
+            
         Human Prompt: {user_prompt}:
             Generate strict syntax for this human prompt. Do not generate comments, only strict syntax.
         """
@@ -78,7 +84,7 @@ class GPT4:
     def gpt_4o_parameters(self, prompt, parameters):
         text = f"""
         I am {prompt}. You have been provided with a set of parameters for a Python function: {parameters}.
-        Your task is to analyze the parameters and generate a Python list of dictionaries.
+        Your task is to analyze the parameters, stay within sky130 pdk parameters, and generate a Python list of dictionaries.
 
         Each dictionary should describe a parameter with the following structure:
         - `name`: (str) The name of the parameter.
