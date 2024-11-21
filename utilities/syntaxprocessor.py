@@ -17,7 +17,6 @@ class SyntaxProcessor:
             match = re.match(r"import (\w+)", command)
             if match:
                 component_name = match.group(1)
-                print(component_name)
                 self.layout_code.update_import_table([component_name], component_name)
             else:
                 raise ValueError(f"Unable to parse import command: {command}")
@@ -28,8 +27,9 @@ class SyntaxProcessor:
             if match:
                 vartype, varname = match.groups()
                 vartype = float if vartype == "float" else int
-                print(vartype, varname)
                 self.layout_code.update_parameter_table(varname, vartype)
+            else:
+                raise ValueError(f"Unable to parse import command: {command}")
 
         elif command.startswith("place"):
             # Example: place a nmos called inv1_N with width=1.5, length=0.5, fingers=4
@@ -37,28 +37,19 @@ class SyntaxProcessor:
             if match:
                 generator_id, component_name, params = match.groups()
                 params_dict = {}
-
                 if params:
                     try:
-                        # Split parameters by commas and handle key-value pairs
                         for param in params.split(","):
                             if "=" in param:
                                 key, value = param.split("=", 1)  # Split only on the first '='
                                 params_dict[key.strip()] = value.strip()
                             else:
                                 print(f"Skipping invalid parameter: {param}")
-
-                        # Convert params_dict to a string for `user_input_parameters`
-                        params_str = ", ".join(f"{key} = {value}" for key, value in params_dict.items())
-                        print(f"Converted params_dict to user_input_parameters string: {params_str}")
+                        params_str = ", ".join(f"{key} = {value}" for key, value in params_dict.items()) # Convert params_dict to a string for `user_input_parameters`
                     except Exception as e:
                         raise ValueError(f"Error parsing parameters for 'place' command: {params}. Error: {e}")
                 else:
-                    # Handle cases with no parameters
-                    params_str = ""
-
-                # Call update_place_table with the parsed parameters
-                print(f"generator_id {generator_id}, component_name {component_name}, param {params_str}")
+                    params_str = "" # Handle cases with no parameters
                 self.layout_code.update_place_table(generator_id=generator_id, component_name=component_name, user_input_parameters=params_str)
             else:
                 raise ValueError(f"Could not parse 'place' command: {command}")
@@ -68,12 +59,10 @@ class SyntaxProcessor:
             match = re.match(r"move (\w+) (right|left|above|below)(?: of)? (\w+)", command)
             if match:
                 comp_to_move, direction, ref_comp = match.groups()
-                # Ensure captured components are stripped of whitespace
                 comp_to_move = comp_to_move.strip()
                 direction = direction.strip()
                 ref_comp = ref_comp.strip()
                 print(f"Parsed move command: comp_to_move='{comp_to_move}', direction='{direction}', ref_comp='{ref_comp}'")
-                # Update the move table
                 self.layout_code.update_move_table("relative", comp_to_move, ref_comp, direction)
             else:
                 raise ValueError(f"Unable to parse move command: {command}")
