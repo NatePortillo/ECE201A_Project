@@ -6,10 +6,37 @@ from glayout.flow.pdk.sky130_mapped import sky130_mapped_pdk as sky130
 from glayout.syntaxer.process_input import GlayoutCode
 
 class SyntaxProcessor:
+    """
+    A class for processing layout strict syntax commands into executable layout code.
+
+    This class processes user-provided commands in a strict syntax format to 
+    generate layout code using the GlayoutCode library. It supports commands for 
+    importing components, creating parameters, placing devices, and moving components.
+
+    Attributes:
+        layout_code (GlayoutCode): An instance of GlayoutCode for managing the layout syntax and code generation.
+    """
     def __init__(self, toplvl_name="layout"):
+        """
+        Initializes the SyntaxProcessor with a top-level layout name.
+        """
         self.layout_code = GlayoutCode(toplvl_name)
 
     def parse_command(self, command, pdk):
+        """
+        Parses and processes a single layout command following StrictSyntax format.
+
+        Supports the following commands:
+            - `import`: Imports a component into the layout.
+            - `create`: Creates a parameter with a specified type and name.
+            - `place`: Places a component with specified attributes.
+            - `move`: Moves a component relative to another component.
+            -'route': Does not currently work.
+
+        Args:
+            command (str): The strict syntax command to parse.
+            pdk (MappedPDK): The process design kit (PDK) object for the layout.
+        """
         command = command.strip()
 
         if command.startswith("import"):
@@ -76,7 +103,14 @@ class SyntaxProcessor:
 
     def process_syntax(self, strict_syntax, pdk=sky130):
         """
-        Process a block of strict syntax commands.
+        Processes a block of strict syntax commands into layout code.
+
+        This method splits the strict syntax input into individual commands and
+        processes each using `parse_command`.
+
+        Args:
+            strict_syntax (str): A block of strict syntax commands separated by newlines.
+            pdk (MappedPDK, optional): The process design kit (PDK) object. Defaults to sky130.
         """
         commands = strict_syntax.strip().split("\n")
         for command in commands:

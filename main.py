@@ -23,7 +23,6 @@ with open("generated_layout.py", "w") as f: # Save the generated Python code to 
 
 from generated_layout import layout_cell # Extract the parameters from layout_call function
 parameters = extract_function_parameters(layout_cell)
-
 try:
     parsed_response = retry_function(
         generate_parameters_and_process, 
@@ -40,7 +39,6 @@ param_values['pdk'] = sky130  # Replace "MappedPDK" string with the actual objec
 layout = layout_cell(**param_values)
 
 display = Display()
-
 with display.left:
   display.display_component(layout, scale=2.5)
 

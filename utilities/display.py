@@ -42,24 +42,3 @@ class Display:
             component.write_gds("out.gds")
 
         self.display_gds('out.gds', scale)
-
-#with hide:
-#  # Generate the sky130 component
-#  component_sky130 = nmos(pdk = sky130, fingers=5)
-  # Generate the gf180 component
-#  component_gf180 = nmos(pdk = gf180, fingers=5)
-
-# Display the components' GDS and SPICE netlists
-#with left:
-#  print('Skywater 130nm N-MOSFET (fingers = 5)')
-#  display_component(component_sky130, scale=2.5)
-#with leftSPICE:
-#  print('Skywater 130nm SPICE Netlist')
-#  print(component_sky130.info['netlist'].generate_netlist())
-
-#with right:
-#  print('GF 180nm N-MOSFET (fingers = 5)')
-#  display_component(component_gf180, scale=2)
-#with rightSPICE:
-# print('GF 180nm SPICE Netlist')
-#  print(component_gf180.info['netlist'].generate_netlist())
