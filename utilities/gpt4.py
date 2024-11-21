@@ -91,7 +91,8 @@ class GPT4:
             {convo_background_info[2]}
             
         Human Prompt: {user_prompt}:
-            Generate strict syntax for this human prompt. Do not generate comments, only strict syntax.
+            Generate strict syntax for this human prompt. Avoid using imports unless you are 100% confident they exist within GLayout.
+            Do not generate comments, only strict syntax.
         """
         response = self.gpt_4o_mini(strict_syntax_example)
         return response

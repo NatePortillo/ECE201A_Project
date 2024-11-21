@@ -82,8 +82,8 @@ class SyntaxProcessor:
                 raise ValueError(f"Could not parse 'place' command: {command}")
 
         elif command.startswith("move"):
-            # Example: move latch_B2 below latch_B1
-            match = re.match(r"move (\w+) (right|left|above|below)(?: of)? (\w+)", command)
+            # Example: move latch_B2 below latch_B1 or move mirror to the right of reference
+            match = re.match(r"move (\w+)(?: to the)? (right|left|above|below)(?: of)? (\w+)", command)
             if match:
                 comp_to_move, direction, ref_comp = match.groups()
                 comp_to_move = comp_to_move.strip()
@@ -94,12 +94,12 @@ class SyntaxProcessor:
             else:
                 raise ValueError(f"Unable to parse move command: {command}")
 
-        #elif command.startswith("route"):
+        elif command.startswith("route"):
             # Example: route between inv1_N_drain and inv2_N_gate using smart_route
-            #match = re.match(r"route between (\w+) and (\w+) using (\w+)", command)
-            #if match:
-                #port1, port2, route_type = match.groups()
-                #self.layout_code.update_route_table(port1, port2, "", route_type)
+            match = re.match(r"route between (\w+) and (\w+) using (\w+)", command)
+            if match:
+                port1, port2, route_type = match.groups()
+                self.layout_code.update_route_table(port1, port2, "", route_type)
 
     def process_syntax(self, strict_syntax, pdk=sky130):
         """
