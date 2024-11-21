@@ -54,7 +54,8 @@ class GPT4:
     def gpt_4o_strict_syntax(self, 
                              user_prompt:str, 
                              syntax_instructions: str, 
-                             rag_background_info: list,):
+                             rag_background_info: list,
+                             convo_background_info: list):
         strict_syntax_example = f"""
         You are a layout automation assistant. Translate the following human prompt into strict syntax for analog layout design.
         Here are guidelines you must follow for Strict Syntax:
@@ -67,27 +68,16 @@ class GPT4:
 
         Lastly, here are some examples of strict syntax:
         Example 1:
-            Here is an example of strictsyntax:
-                RegulatedCascode
-                create a float parameter called cascode_width
-                create a float parameter called feedback_width
-                create a float parameter called cascode_length
-                create a float parameter called feedback_length
-                create a int parameter called cascode_multiplier
-                create a int parameter called feedback_multiplier
-                create a int parameter called cascode_fingers
-                create a int parameter called feedback_fingers
-                place a nmos called cascode with width=cascode_width, length=cascode_length, fingers=cascode_fingers, rmult=1, multipliers=cascode_multiplier, with_substrate_tap=False, with_tie=False, with_dummy=False 
-                place a nmos called feedback with width=feedback_width, length=feedback_length, fingers=feedback_fingers, rmult=1, multipliers=feedback_multiplier, with_substrate_tap=False, with_tie=False, with_dummy=False 
-                move feedback below cascode
-                route between cascode_gate_E and feedback_drain_E using smart_route
-                route between feedback_gate_W and feedback_source_W using smart_route
-
+            {convo_background_info[0]}
         Example 2:
+            {convo_background_info[1]}
+        Example 3:
+            {convo_background_info[2]}
+        Example 4:
             Human Prompt: {user_prompt}:
-            Generate strict syntax for this layout.
-        """
 
+            Generate strict syntax for this human prompt. Do not generate comments, only strict syntax.
+        """
         response = self.gpt_4o_mini(strict_syntax_example)
         print(response)
         return response

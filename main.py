@@ -9,7 +9,7 @@ from glayout.flow.pdk.sky130_mapped import sky130_mapped_pdk as sky130
 
 from utilities.display import Display
 from utilities.utils import retry_function, extract_function_parameters
-from RAG.search_embeddings import parse_embeddings, DF_ANALOG
+from RAG.search_embeddings import parse_embeddings, DF_ANALOG, DF_CONVOS
 from utilities.prompts import STRICT_SYNTAX_INSTRUCT
 USER_PROMPT = "Create a strong-arm latch using interdigitated placement to match the cross-coupled inverters"
 
@@ -20,7 +20,8 @@ def generate_strictsyntax_and_process():
     # Generate new strict_syntax
     strict_syntax = gpt4.gpt_4o_strict_syntax(USER_PROMPT, 
                                               STRICT_SYNTAX_INSTRUCT, 
-                                              parse_embeddings(df=DF_ANALOG, input_prompt=USER_PROMPT))
+                                              parse_embeddings(df=DF_ANALOG, input_prompt=USER_PROMPT),
+                                              parse_embeddings(df=DF_CONVOS, input_prompt=USER_PROMPT))
     print(f"Generated strict_syntax: {strict_syntax}")
 
     return map.process_syntax(strict_syntax) # Process the strict syntax
