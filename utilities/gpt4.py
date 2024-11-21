@@ -51,13 +51,21 @@ class GPT4:
         except requests.exceptions.RequestException as e:
             return f"API request failed: {e}"
         
-    def gpt_4o_strict_syntax(self, user_prompt:str, syntax_instructions: str):
+    def gpt_4o_strict_syntax(self, 
+                             user_prompt:str, 
+                             syntax_instructions: str, 
+                             rag_background_info: list,):
         strict_syntax_example = f"""
         You are a layout automation assistant. Translate the following human prompt into strict syntax for analog layout design.
         Here are guidelines you must follow for Strict Syntax:
         {syntax_instructions}
 
-        Here are some examples of strict syntax:
+        Additionally, here is background information that may help inform your strict syntax design:
+        1) {rag_background_info[0]}
+        2) {rag_background_info[1]}
+        3) {rag_background_info[2]}
+
+        Lastly, here are some examples of strict syntax:
         Example 1:
             Here is an example of strictsyntax:
                 RegulatedCascode

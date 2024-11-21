@@ -9,6 +9,7 @@ from glayout.flow.pdk.sky130_mapped import sky130_mapped_pdk as sky130
 
 from utilities.display import Display
 from utilities.utils import retry_function, extract_function_parameters
+from RAG.search_embeddings import parse_embeddings, DF_ANALOG
 from utilities.prompts import STRICT_SYNTAX_INSTRUCT
 USER_PROMPT = "Create a strong-arm latch using interdigitated placement to match the cross-coupled inverters"
 
@@ -17,11 +18,12 @@ def generate_strictsyntax_and_process():
     map = SyntaxProcessor()
 
     # Generate new strict_syntax
-    strict_syntax = gpt4.gpt_4o_strict_syntax(USER_PROMPT, STRICT_SYNTAX_INSTRUCT)
+    strict_syntax = gpt4.gpt_4o_strict_syntax(USER_PROMPT, 
+                                              STRICT_SYNTAX_INSTRUCT, 
+                                              parse_embeddings(df=DF_ANALOG, input_prompt=USER_PROMPT))
     print(f"Generated strict_syntax: {strict_syntax}")
 
-    # Process the strict syntax
-    return map.process_syntax(strict_syntax)
+    return map.process_syntax(strict_syntax) # Process the strict syntax
 
 try:
     result = retry_function(
@@ -33,12 +35,10 @@ try:
 except Exception as e:
     print(f"Function ultimately failed after retries: {e}")
 
-# Save the generated Python code to a file
-with open("generated_layout.py", "w") as f:
+with open("generated_layout.py", "w") as f: # Save the generated Python code to a file
     f.write(result)
 
-# Extract the parameters from layout_call function
-from generated_layout import layout_cell
+from generated_layout import layout_cell # Extract the parameters from layout_call function
 parameters = extract_function_parameters(layout_cell)
 
 def generate_parameters_and_process():
@@ -58,10 +58,7 @@ try:
 except Exception as e:
     print(f"Function ultimately failed after retries: {e}")
 
-# Create a dictionary of parameter values
-param_values = {param['name']: param['value'] for param in parsed_response}
-print(param_values)
-# Ensure 'pdk' references the actual object if needed
+param_values = {param['name']: param['value'] for param in parsed_response} # Create a dictionary of parameter values
 param_values['pdk'] = sky130  # Replace "MappedPDK" string with the actual object
 layout = layout_cell(**param_values)
 
@@ -70,5 +67,4 @@ display = Display()
 with display.left:
   display.display_component(layout, scale=2.5)
 
-# Delete the layout file
-os.remove('generated_layout.py')
+os.remove('generated_layout.py') # Delete the layout file
