@@ -4,7 +4,7 @@ import ast
 
 from utilities.gpt4 import GPT4
 from utilities.syntaxprocessor import SyntaxProcessor
-from utilities.prompts import STRICT_SYNTAX_INSTRUCT, USER_PROMPT, API_KEY
+from prompts import STRICT_SYNTAX_INSTRUCT, USER_PROMPT, API_KEY
 
 from RAG.search_embeddings import parse_embeddings, DF_ANALOG, DF_CONVOS
 

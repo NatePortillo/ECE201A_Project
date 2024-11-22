@@ -1,7 +1,7 @@
 import json
 from neo4j import GraphDatabase
 
-from utilities.prompts import KG_PASSWORD
+from prompts import KG_PASSWORD
 
 class ComponentKnowledgeGraph:
     def __init__(self, uri, user, password):
@@ -58,7 +58,7 @@ if __name__ == "__main__":
     user = "neo4j"
     password = KG_PASSWORD
 
-    json_file = "C:\Users\natha\Desktop\ECE201A_Project\scripts\component_graph.json" 
+    json_file = r"C:\Users\natha\Desktop\ECE201A_Project\scripts\component_graph.json" 
     with open(json_file, "r") as file:
         components_data = json.load(file)
 
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     kg.populate_graph(components_data) # Populate the graph with components and dependencies
 
     # Testing
-    component_to_query = "DFlipFlop"
+    component_to_query = "OpAmp"
     dependencies = kg.query_dependencies(component_to_query)
     print(f"{component_to_query} depends on: {dependencies}")
     kg.close()
