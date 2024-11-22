@@ -56,7 +56,7 @@ if __name__ == "__main__":
     user = "neo4j"
     password = "cUoYzRehyPFlauBOhekoJolfVDVUOGrTuAwLIZywZy4"
 
-    json_file = r"C:\Users\natha\Desktop\ECE201A_Project\scripts\component_graph.json"  # Replace with your JSON file path
+    json_file = "C:\Users\natha\Desktop\ECE201A_Project\scripts\component_graph.json" 
     with open(json_file, "r") as file:
         components_data = json.load(file)
 
