@@ -1,3 +1,5 @@
+import os
+
 STRICT_SYNTAX_INSTRUCT = """
 What is Glayout strict syntax
 Glayout strictsyntax is a command language for producing analog circuit layout. Glayout strictsyntax allows the designer to place, move, and connect circuit Components without needing to draw them, rather with strictsyntax the designer can describe them in simple words and with simple commands.
@@ -26,4 +28,4 @@ When specifying component parameters always use named arguments. You should alwa
 
 USER_PROMPT = "Create a simple differential amplifier using two matched nMOS transistors as the input pair."
 
-API_KEY="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"
+API_KEY=os.getenv("API_KEY")
