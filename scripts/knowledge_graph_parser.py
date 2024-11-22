@@ -45,10 +45,8 @@ def save_to_json(data, output_file):
     with open(output_file, "w") as json_file:
         json.dump(data, json_file, indent=4)
 
-
-# Main script execution
 if __name__ == "__main__":
-    folder_path = r"C:\Users\natha\Desktop\ECE201A_Project\RAG\foundational_convos"  # Replace with your folder path
+    folder_path = r"C:\Users\natha\Desktop\ECE201A_Project\RAG\foundational_convos"
     output_file = "component_graph.json"
 
     components_graph = process_all_files(folder_path)
