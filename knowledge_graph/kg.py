@@ -1,6 +1,8 @@
 import json
 from neo4j import GraphDatabase
 
+from utilities.prompts import KG_PASSWORD
+
 class ComponentKnowledgeGraph:
     def __init__(self, uri, user, password):
         self.driver = GraphDatabase.driver(uri, auth=(user, password))
@@ -54,7 +56,7 @@ class ComponentKnowledgeGraph:
 if __name__ == "__main__":
     uri = "neo4j+s://37447c78.databases.neo4j.io"
     user = "neo4j"
-    password = "cUoYzRehyPFlauBOhekoJolfVDVUOGrTuAwLIZywZy4"
+    password = KG_PASSWORD
 
     json_file = "C:\Users\natha\Desktop\ECE201A_Project\scripts\component_graph.json" 
     with open(json_file, "r") as file:
