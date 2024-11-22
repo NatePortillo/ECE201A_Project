@@ -1,48 +1,72 @@
 import json
 from neo4j import GraphDatabase
-from glayout.flow.pdk.sky130_mapped.grules import grulesobj
 
-class Sky130KnowledgeGraph:
+class ComponentKnowledgeGraph:
     def __init__(self, uri, user, password):
         self.driver = GraphDatabase.driver(uri, auth=(user, password))
 
     def close(self):
         self.driver.close()
 
-    def add_layer(self, layer_name):
+    def add_component(self, component_name):
+        """
+        Add a component node to the Neo4j database.
+        """
         with self.driver.session() as session:
-            session.run("MERGE (:Layer {name: $name})", name=layer_name)
+            session.run("MERGE (:Component {name: $name})", name=component_name)
 
-    def add_constraint(self, layer1, layer2, constraint):
+    def add_dependency(self, component, dependency):
+        """
+        Add a dependency relationship between two components.
+        """
         with self.driver.session() as session:
             session.run("""
-                MATCH (l1:Layer {name: $layer1}), (l2:Layer {name: $layer2})
-                MERGE (l1)-[r:CONSTRAINS]->(l2)
-                SET r.rules_json = $rules_json
-            """, layer1=layer1, layer2=layer2, rules_json=constraint["rules_json"])
+                MATCH (c:Component {name: $component}), (d:Component {name: $dependency})
+                MERGE (c)-[:DEPENDS_ON]->(d)
+            """, component=component, dependency=dependency)
 
-    def query_neo4j(self):
+    def populate_graph(self, components_data):
+        """
+        Populate the Neo4j graph with components and their dependencies.
+        """
+        for component, dependencies in components_data.items():
+            self.add_component(component) # Add the component as a node
+
+            for dependency in dependencies: # Add its dependencies as nodes and relationships
+                self.add_component(dependency)
+                self.add_dependency(component, dependency)
+
+    def query_dependencies(self, component_name):
+        """
+        Query and print all dependencies for a given component.
+        """
         with self.driver.session() as session:
             query = """
-            MATCH (l1:Layer {name: $layer1})-[r:CONSTRAINS]->(l2:Layer {name: $layer2}) 
-            RETURN r.rules_json AS rules_json
+            MATCH (c:Component {name: $component_name})-[:DEPENDS_ON]->(d:Component)
+            RETURN d.name AS dependency
             """
-            
-            result = session.run(query, layer1="dnwell", layer2="nwell") # Execute the query
-            
-            for record in result:
-                print(f"Rules JSON: {record['rules_json']}")
+            result = session.run(query, component_name=component_name)
+            dependencies = [record["dependency"] for record in result]
+            return dependencies
 
-kg = Sky130KnowledgeGraph("neo4j+s://37447c78.databases.neo4j.io", "neo4j", "cUoYzRehyPFlauBOhekoJolfVDVUOGrTuAwLIZywZy4")
 
-for layer1, interactions in grulesobj.items(): # Parse grulesobj and populate the knowledge graph with PDK
-    kg.add_layer(layer1)
-    for layer2, rules in interactions.items():
-        kg.add_layer(layer2)
-        if rules:  # Add constraints only if there are rules between constraints
-            print(rules)
-            rules_json = json.dumps(rules)
-            kg.add_constraint(layer1, layer2, {"rules_json": rules_json})
+# Testing
+if __name__ == "__main__":
+    uri = "neo4j+s://37447c78.databases.neo4j.io"
+    user = "neo4j"
+    password = "cUoYzRehyPFlauBOhekoJolfVDVUOGrTuAwLIZywZy4"
 
-kg.query_neo4j()
-kg.close()
+    json_file = r"C:\Users\natha\Desktop\ECE201A_Project\scripts\component_graph.json"  # Replace with your JSON file path
+    with open(json_file, "r") as file:
+        components_data = json.load(file)
+
+
+    kg = ComponentKnowledgeGraph(uri, user, password)
+
+    kg.populate_graph(components_data) # Populate the graph with components and dependencies
+
+    # Testing
+    component_to_query = "DFlipFlop"
+    dependencies = kg.query_dependencies(component_to_query)
+    print(f"{component_to_query} depends on: {dependencies}")
+    kg.close()
