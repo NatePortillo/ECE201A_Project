@@ -91,7 +91,7 @@ class GPT4:
             {convo_background_info[2]}
             
         Human Prompt: {user_prompt}:
-            Generate strict syntax for this human prompt. 
+            Generate strict syntax for this human prompt.
             Do not generate comments, only strict syntax.
         """
         response = self.gpt_4o_mini(strict_syntax_example)
@@ -165,32 +165,32 @@ class GPT4:
             - Comments are excluded from the output to maintain syntax purity.
         """
 
-            strict_syntax_example = f"""
-            You are a layout automation assistant. Translate the following human prompt into strict syntax for analog layout design.
-            Here are guidelines you must follow for Strict Syntax:
-            {syntax_instructions}
+        strict_syntax_example = f"""
+        You are a layout automation assistant. Translate the following human prompt into strict syntax for analog layout design.
+        Here are guidelines you must follow for Strict Syntax:
+        {syntax_instructions}
 
-            Additionally, here is background information that may help inform your strict syntax design:
-            1) {rag_background_info[0]}
-            2) {rag_background_info[1]}
-            3) {rag_background_info[2]}
+        Additionally, here is background information that may help inform your strict syntax design:
+        1) {rag_background_info[0]}
+        2) {rag_background_info[1]}
+        3) {rag_background_info[2]}
 
-            Lastly, here are some examples of strict syntax:
-            Example 1:
-                {convo_background_info[0]}
-            Example 2:
-                {convo_background_info[1]}
-            Example 3:
-                {convo_background_info[2]}
-                
-            Human Prompt: {user_prompt}:
-                Generate strict syntax for this human prompt. Avoid using imports unless you are 100% confident they exist within GLayout.
-                Do not generate comments, only strict syntax.
+        Lastly, here are some examples of strict syntax:
+        Example 1:
+            {convo_background_info[0]}
+        Example 2:
+            {convo_background_info[1]}
+        Example 3:
+            {convo_background_info[2]}
+            
+        Human Prompt: {user_prompt}:
+            Generate strict syntax for this human prompt. Avoid using imports unless you are 100% confident they exist within GLayout.
+            Do not generate comments, only strict syntax.
 
-                Additionally, here are some possible imports you may use for this design. You do not have to use it but do not make up any imports.
-                Possibly useful import: {close_comp_suggestion}
-                Possibly related useful imports: {close_comp_dependencies}
-                All legal imports: {all_legal_imports}
-            """
-            response = self.gpt_4o_mini(strict_syntax_example)
-            return response
+            Additionally, here are some possible imports you may use for this design. You do not have to use it but do not make up any imports.
+            Possibly useful import: {close_comp_suggestion}
+            Possibly related useful imports: {close_comp_dependencies}
+            All legal imports: {all_legal_imports}
+        """
+        response = self.gpt_4o_mini(strict_syntax_example)
+        return response
