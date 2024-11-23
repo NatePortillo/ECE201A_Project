@@ -2,7 +2,7 @@ from openai import OpenAI
 import json
 import pandas as pd
 
-from utilities.prompts import API_KEY
+from prompts import API_KEY
 
 openai_client = OpenAI(api_key=API_KEY)
 

@@ -5,6 +5,8 @@ from glayout.flow.routing import smart_route
 from glayout.flow.pdk.sky130_mapped import sky130_mapped_pdk as sky130
 from glayout.syntaxer.process_input import GlayoutCode
 
+from knowledge_graph.kg import ComponentKnowledgeGraph
+
 class SyntaxProcessor:
     """
     A class for processing layout strict syntax commands into executable layout code.
@@ -21,6 +23,9 @@ class SyntaxProcessor:
         Initializes the SyntaxProcessor with a top-level layout name.
         """
         self.layout_code = GlayoutCode(toplvl_name)
+        self.kg_drive = ComponentKnowledgeGraph("neo4j+s://37447c78.databases.neo4j.io",
+                                                "neo4j",
+                                                "cUoYzRehyPFlauBOhekoJolfVDVUOGrTuAwLIZywZy4")
 
     def parse_command(self, command, pdk):
         """
@@ -44,7 +49,11 @@ class SyntaxProcessor:
             match = re.match(r"import (\w+)", command)
             if match:
                 component_name = match.group(1)
-                self.layout_code.update_import_table([component_name], component_name)
+                if(self.kg_drive.is_valid_import(component_name)):
+                    self.layout_code.update_import_table([component_name], component_name)
+                    return component_name, True 
+                else:
+                    return component_name, False
             else:
                 raise ValueError(f"Unable to parse import command: {command}")
         
@@ -100,6 +109,8 @@ class SyntaxProcessor:
             if match:
                 port1, port2, route_type = match.groups()
                 self.layout_code.update_route_table(port1, port2, "", route_type)
+        
+        return None, True
 
     def process_syntax(self, strict_syntax, pdk=sky130):
         """
@@ -114,5 +125,8 @@ class SyntaxProcessor:
         """
         commands = strict_syntax.strip().split("\n")
         for command in commands:
-            self.parse_command(command, pdk)
-        return self.layout_code.get_code()
+            component, passed = self.parse_command(command, pdk)
+            if not passed:
+                return component, False
+            
+        return self.layout_code.get_code(), True

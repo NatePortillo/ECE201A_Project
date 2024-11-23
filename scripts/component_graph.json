@@ -1,0 +1,53 @@
+{
+    "AND": [
+        "Inverter",
+        "NAND"
+    ],
+    "ClassABStage": [
+        "PushPull",
+        "CurrentMirrorNFET"
+    ],
+    "CrossCoupledInverters": [],
+    "CurrentMirrorNFET": [],
+    "CurrentMirrorPFET": [],
+    "DeltaSigmaModulator": [
+        "OpAmp",
+        "PassiveComponents",
+        "LatchedComparator"
+    ],
+    "DFlipFlop": [
+        "AND",
+        "Inverter",
+        "NOR"
+    ],
+    "FIntegrator": [
+        "CurrentMirrorPFET",
+        "CurrentMirrorNFET"
+    ],
+    "Inverter": [],
+    "LatchedComparator": [
+        "DFlipFlop",
+        "StrongArmLatch"
+    ],
+    "NAND": [],
+    "NOR": [],
+    "OpAmp": [
+        "FIntegrator",
+        "SIntegrator",
+        "TIntegrator",
+        "ClassABStage"
+    ],
+    "PassiveComponents": [
+        "resistor"
+    ],
+    "PushPull": [],
+    "SIntegrator": [
+        "CurrentMirrorNFET"
+    ],
+    "StrongArmLatch": [
+        "CrossCoupledInverters"
+    ],
+    "TIntegrator": [
+        "CurrentMirrorNFET"
+    ]
+}
