@@ -1,7 +1,6 @@
 import json
 from neo4j import GraphDatabase
-
-from prompts import KG_PASSWORD
+from difflib import get_close_matches
 
 class ComponentKnowledgeGraph:
     def __init__(self, uri, user, password):
@@ -51,24 +50,67 @@ class ComponentKnowledgeGraph:
             dependencies = [record["dependency"] for record in result]
             return dependencies
 
+    def is_valid_import(self, component_name):
+        """
+        Check if a component is valid based on the knowledge graph.
+        """
+        if not self.driver:
+            raise RuntimeError("Knowledge graph driver is not initialized.")
+        
+        with self.driver.session() as session:
+            query = """
+            MATCH (c:Component {name: $component_name})
+            RETURN c.name AS name
+            """
+            result = session.run(query, component_name=component_name)
+            return result.single() is not None
 
-# Testing
-if __name__ == "__main__":
-    uri = "neo4j+s://37447c78.databases.neo4j.io"
-    user = "neo4j"
-    password = KG_PASSWORD
+    def get_all_components(self):
+        """
+        Retrieve all valid component names from the knowledge graph.
 
-    json_file = r"C:\Users\natha\Desktop\ECE201A_Project\scripts\component_graph.json" 
-    with open(json_file, "r") as file:
-        components_data = json.load(file)
+        Returns:
+            list: A list of all valid component names.
+        """
+        with self.driver.session() as session:
+            query = "MATCH (c:Component) RETURN c.name AS name"
+            result = session.run(query)
+            return [record["name"] for record in result]
 
+    def get_all_components_with_dependencies(self):
+        """
+        Retrieve all components and their dependencies from the knowledge graph.
 
-    kg = ComponentKnowledgeGraph(uri, user, password)
+        Returns:
+            dict: A dictionary where keys are components and values are lists of dependencies.
+        """
+        with self.driver.session() as session:
+            query = """
+            MATCH (c:Component)
+            OPTIONAL MATCH (c)-[:DEPENDS_ON]->(dependency:Component)
+            RETURN c.name AS component, collect(dependency.name) AS dependencies
+            """
+            result = session.run(query)
 
-    kg.populate_graph(components_data) # Populate the graph with components and dependencies
+            # Organize the results into a dictionary
+            components_with_dependencies = {}
+            for record in result:
+                component = record["component"]
+                dependencies = record["dependencies"]
+                components_with_dependencies[component] = [dep for dep in dependencies if dep is not None]
 
-    # Testing
-    component_to_query = "OpAmp"
-    dependencies = kg.query_dependencies(component_to_query)
-    print(f"{component_to_query} depends on: {dependencies}")
-    kg.close()
+        return components_with_dependencies
+
+    def suggest_string_based_alternatives(self, component_name, all_components, similarity_threshold=0.6):
+        """
+        Suggest alternatives based on string similarity.
+
+        Args:
+            component_name (str): The invalid component name.
+            all_components (list): A list of all valid components.
+            similarity_threshold (float): Minimum similarity score.
+
+        Returns:
+            list: Suggested alternatives.
+        """
+        return get_close_matches(component_name, all_components, n=1)

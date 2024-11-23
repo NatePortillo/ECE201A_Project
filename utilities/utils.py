@@ -76,22 +76,56 @@ def extract_function_parameters(func):
 def generate_strictsyntax_and_process():
     """
     Generates and processes strict syntax using GPT-4 and a syntax processor.
-    Additionally, calls function 'parse_embeddings' to dynamically get relevant data using RAGs
+    Dynamically fetches relevant data using RAGs and retries if processing fails.
 
     Returns:
         str: The processed strict syntax as a string.
 
     Raises:
-        Exception: If any step in generating or processing the syntax fails.
+        Exception: If all attempts to process the syntax fail.
     """
     gpt4 = GPT4(api_key=API_KEY)
-    map = SyntaxProcessor()
-    strict_syntax = gpt4.gpt_4o_strict_syntax(USER_PROMPT, # Generate new strict_syntax
-                                              STRICT_SYNTAX_INSTRUCT, 
-                                              parse_embeddings(df=DF_ANALOG, input_prompt=USER_PROMPT),
-                                              parse_embeddings(df=DF_CONVOS, input_prompt=USER_PROMPT))
+    syntax_processor = SyntaxProcessor()
     
-    return map.process_syntax(strict_syntax) # Process the strict syntax
+    # Step 1: Generate initial strict syntax
+    strict_syntax = gpt4.gpt_4o_strict_syntax(
+        USER_PROMPT,
+        STRICT_SYNTAX_INSTRUCT,
+        parse_embeddings(df=DF_ANALOG, input_prompt=USER_PROMPT),
+        parse_embeddings(df=DF_CONVOS, input_prompt=USER_PROMPT)
+    )
+    print(strict_syntax)
+
+    # Step 2: Process the strict syntax
+    component, passed = syntax_processor.process_syntax(strict_syntax)
+    if passed:
+        return component  # Successfully processed code
+
+    # Step 3: Handle invalid component
+    print(f"Invalid component found: {component}")
+    kg_components = syntax_processor.kg_drive.get_all_components()
+    close_matches = syntax_processor.kg_drive.suggest_string_based_alternatives(component, kg_components)
+    close_match_dependencies = syntax_processor.kg_drive.query_dependencies(close_matches)
+    all_legal_imports = syntax_processor.kg_drive.get_all_components_with_dependencies()
+
+    # Step 4: Generate feedback prompt with suggestions
+    strict_syntax_fb = gpt4.gpt_4o_comp_feedback(
+        USER_PROMPT,
+        STRICT_SYNTAX_INSTRUCT,
+        parse_embeddings(df=DF_ANALOG, input_prompt=USER_PROMPT),
+        parse_embeddings(df=DF_CONVOS, input_prompt=USER_PROMPT),
+        close_matches,
+        close_match_dependencies,
+        all_legal_imports
+    )
+    print(strict_syntax_fb)
+    # Step 5: Retry processing the feedback-generated syntax
+    component, passed = syntax_processor.process_syntax(strict_syntax_fb)
+    if passed:
+        return component
+
+    # If processing still fails, raise an error
+    raise Exception(f"Failed to process strict syntax even after retries. Invalid component: {component}")
 
 def generate_parameters_and_process(parameters):
     """
