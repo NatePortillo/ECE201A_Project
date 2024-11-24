@@ -29,4 +29,5 @@ When specifying component parameters always use named arguments. You should alwa
 USER_PROMPT = "Create a simple differential amplifier using two matched nMOS transistors as the input pair."
 
 API_KEY=os.getenv("API_KEY")
+API_KEY= "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"
 KG_PASSWORD=os.getenv("KG_PASSWORD")
