@@ -94,7 +94,6 @@ def generate_strictsyntax_and_process():
         parse_embeddings(df=DF_ANALOG, input_prompt=USER_PROMPT),
         parse_embeddings(df=DF_CONVOS, input_prompt=USER_PROMPT)
     )
-    print(strict_syntax)
 
     # Step 2: Process the strict syntax
     component, passed = syntax_processor.process_syntax(strict_syntax)
@@ -118,7 +117,6 @@ def generate_strictsyntax_and_process():
         close_match_dependencies,
         all_legal_imports
     )
-    print(strict_syntax_fb)
     # Step 5: Retry processing the feedback-generated syntax
     component, passed = syntax_processor.process_syntax(strict_syntax_fb)
     if passed:
@@ -127,7 +125,7 @@ def generate_strictsyntax_and_process():
     # If processing still fails, raise an error
     raise Exception(f"Failed to process strict syntax even after retries. Invalid component: {component}")
 
-def generate_parameters_and_process(parameters):
+def generate_parameters_and_process(parameters, feedback=""):
     """
     Generates and processes parameters (parameter values) for a layout function using GPT-4.
 
@@ -146,7 +144,7 @@ def generate_parameters_and_process(parameters):
         Exception: If the GPT-4 API call fails or returns an unexpected response.
     """
     gpt4 = GPT4(api_key=API_KEY)
-    response = gpt4.gpt_4o_parameters(USER_PROMPT, parameters)
+    response = gpt4.gpt_4o_parameters(USER_PROMPT, parameters, feedback)
     parsed_response = ast.literal_eval(response)  # Convert string to Python list
     
     return parsed_response

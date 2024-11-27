@@ -97,12 +97,13 @@ class GPT4:
         response = self.gpt_4o_mini(strict_syntax_example)
         return response
 
-    def gpt_4o_parameters(self, prompt, parameters):
+    def gpt_4o_parameters(self, prompt, parameters, feedback=""):
         """
         Generates a list of dictionaries describing function parameters using GPT-4.
         """
         text = f"""
         I am {prompt}. You have been provided with a set of parameters for a Python function: {parameters}.
+        {feedback}
         Your task is to analyze the parameters, stay within sky130 pdk parameters, and generate a Python list of dictionaries.
 
         Each dictionary should describe a parameter with the following structure:
