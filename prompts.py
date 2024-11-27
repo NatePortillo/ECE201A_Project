@@ -30,5 +30,5 @@ USER_PROMPT = "Create a simple differential amplifier using two matched nMOS tra
 
 
 API_KEY=os.getenv("API_KEY")
-API_KEY= "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"
+API_KEY= "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"
 KG_PASSWORD=os.getenv("KG_PASSWORD")

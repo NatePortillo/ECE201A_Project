@@ -6,7 +6,7 @@ from prompts import API_KEY
 
 openai_client = OpenAI(api_key=API_KEY)
 
-with open(r"C:\Users\pmpin\Documents\GitHub\ECE201A_Project\scripts\convos.json", "r") as f: # Load JSON data (of strict syntax examples, gotten from convos folder)
+with open(r"C:\Users\natha\Desktop\ECE201A_Project\scripts\convos.json", "r") as f: # Load JSON data (of strict syntax examples, gotten from convos folder)
     data = json.load(f)
 
 convo_examples = [{"name": key, "content": value} for key, value in data.items()]
