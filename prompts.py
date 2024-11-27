@@ -31,5 +31,4 @@ USER_PROMPT = "Create a simple differential amplifier using two matched nMOS tra
 FEEDBACK = "The previously mentioned parameters are not good enough for the user. The user requests you modify the parameters in the following: "
 
 API_KEY=os.getenv("API_KEY")
-API_KEY= "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"
 KG_PASSWORD=os.getenv("KG_PASSWORD")
