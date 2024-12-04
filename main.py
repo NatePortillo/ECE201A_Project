@@ -79,10 +79,14 @@ while(parameter_feedback):
     with display.left:
         display.display_component(layout, scale=2.5)
 
-    os.remove('generated_layout.py') # Delete the layout file
+    # os.remove('generated_layout.py') # Delete the layout file
 
     print("Here are the parameters:")
     for res_params in param_values.keys():
         if res_params != 'pdk':
             print(res_params,": ", param_values[res_params])
     parameter_feedback = input("Feedback for the layout ?, if none, please press enter: \n")
+
+
+
+os.remove('generated_layout.py') # Delete the layout file
