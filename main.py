@@ -52,11 +52,7 @@ for res_params in param_values.keys():
 
 parameter_feedback = input("Feedback for the layout parameters? If none, please press enter: \n")
 while(parameter_feedback):
-    USER_PROMPT = USER_PROMPT +"\n"+ parameter_feedback
-    print(USER_PROMPT)
-    
     FEEDBACK = FEEDBACK + parameter_feedback
-    print(FEEDBACK)
 
     try:
         parsed_response = retry_function(
@@ -79,7 +75,7 @@ while(parameter_feedback):
     with display.left:
         display.display_component(layout, scale=2.5)
 
-    os.remove('generated_layout.py') # Delete the layout file
+    #os.remove('generated_layout.py') # Delete the layout file
 
     print("Here are the parameters:")
     for res_params in param_values.keys():

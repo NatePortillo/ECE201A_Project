@@ -25,7 +25,7 @@ class SyntaxProcessor:
         self.layout_code = GlayoutCode(toplvl_name)
         self.kg_drive = ComponentKnowledgeGraph("neo4j+s://37447c78.databases.neo4j.io",
                                                 "neo4j",
-                                                "cUoYzRehyPFlauBOhekoJolfVDVUOGrTuAwLIZywZy4")
+                                                "POPULATE ME")
 
     def parse_command(self, command, pdk):
         """

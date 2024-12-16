@@ -28,7 +28,7 @@ When specifying component parameters always use named arguments. You should alwa
 
 USER_PROMPT = "Create a simple differential amplifier using two matched nMOS transistors as the input pair."
 
-FEEDBACK = "The previously mentioned parameters are not good enough for the user. The user requests you modify the parameters in the following: "
+FEEDBACK = "DO NOT ALTER THE PARAMETER NAMES, ONLY THE VALUES. YOU MUST: "
 
-API_KEY=os.getenv("API_KEY")
+API_KEY="POPULATE ME"
 KG_PASSWORD=os.getenv("KG_PASSWORD")
